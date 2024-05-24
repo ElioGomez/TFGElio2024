@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+  
+  $(document).ready(function()
+  {
+
+      $.ajax({
+          type: "GET",
+          url: "http://localhost:8080/escuela/PerfilProfesor/carga_alumnos.jsp",
+          async:false,
+          success: function(resp){
+          	//alert(resp[0]['Cursos'][0]['Asignaturas'][0]['Alumnos'][0]['Alumno_dni']);
+
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) { 
+              alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+          },
+          dataType: "json"
+       });
+		
+
+	  
+	  $("#editar_nota").on( "click", function() {
+		  
+		  var data = {Dni_alumno:'90123456I',Asignatura:'Matemáticas',Curso:1,Anyo:2024,Nota:3}
+		  
+	      $.ajax({
+	          type: "GET",
+	          url: "http://localhost:8080/escuela/PerfilProfesor/edita_nota.jsp",
+	          async:false,
+	          data:data,
+	          success: function(resp){
+	          	alert(resp);
+	          },
+	          error: function(XMLHttpRequest, textStatus, errorThrown) { 
+	              alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+	          },
+	          dataType: "json"
+	       });
+	  });
+
+  });
+  
+</script>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Iniciar sesión</title>
+</head>
+<body>
+	<button type="button" id="editar_nota">Click Me!</button>
+
+</body>
+</html>
