@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+  
+  $(document).ready(function()
+  {
+
+    $("#submit").click(function()
+    {
+
+      var usuario = $("#usuario").val();
+      var clave = $("#clave").val();
+      var tipo_usuario = $("#tipo_usuario").is(':checked');
+
+      
+      
+      $.ajax({
+        type: "POST",
+        url: "Login.jsp",
+        data: {usuario:usuario,clave:clave,tipo_usuario:tipo_usuario},
+        async:false,
+        success: function(resp){
+        	var datos = jQuery.parseJSON(resp);
+        	if (datos['resultado'] == 1)
+        	{
+        		if (tipo_usuario) window.location.replace("http://localhost:8080/escuela/perfil_profesor.html");
+        		else window.location.replace("http://localhost:8080/escuela/perfil_padre.html");
+        	}else{
+        		// CAJITA MENSAJE DE ERROR
+        	}
+        		
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+            alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+        },
+        dataType: "json"
+      });
+
+    });
+    
+
+  });
+</script>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Iniciar sesión</title>
+</head>
+<body>
+  <h2>Iniciar sesión</h2>
+ 
+    <div>
+      <label for="usuario">Usuario:</label>
+      <input type="text"  id="usuario" name="usuario" value="00000002A" required>
+    </div>
+    <div>
+      <label for="clave">Contraseña:</label>
+      <input type="clave"  id="clave" name="clave" value="PATATA92" required>
+    </div>
+    <div>
+      <input type="checkbox" name="tipo_usuario" id="tipo_usuario" checked/>
+    </div>
+
+    <div>
+      <input id="submit" type="submit" value="Iniciar sesión">
+    </div>
+
+
+
+</body>
+</html>

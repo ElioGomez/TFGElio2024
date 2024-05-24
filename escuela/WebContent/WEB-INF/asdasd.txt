@@ -1,0 +1,53 @@
+<%!
+public String to_md5(String texto)
+{
+	MessageDigest m;
+	byte[] digest = null;
+	
+	try {
+		m = MessageDigest.getInstance("MD5");
+		m.reset();
+		m.update(texto.getBytes());
+		digest = m.digest();
+	} catch (NoSuchAlgorithmException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	BigInteger bigInt = new BigInteger(1,digest);
+	return bigInt.toString(16);
+}
+
+
+
+public JSONObject getBodyParams(HttpServletRequest request) throws ServletException, IOException
+{
+    BufferedReader reader = request.getReader();
+   
+    String json_format = params2json(reader.readLine());
+    JSONObject obj = new JSONObject(json_format);
+  
+	return obj;
+}
+
+
+
+public String params2json(String params)
+{
+	
+	String[] parts = params.split("&");
+    String json_format = "{";
+
+    for(int i=0; i < parts.length; i++)
+    {
+    	String part = parts[i];
+    	int pos = part.indexOf('=');
+    	json_format += "'"+part.substring(0,pos)+"':"+part.substring( pos+1, part.length() )+",";
+    }
+    
+    json_format = json_format.substring(0, json_format.length()-1) + "}";
+
+    return json_format;
+}
+
+%>
