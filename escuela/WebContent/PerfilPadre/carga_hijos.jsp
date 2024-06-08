@@ -24,7 +24,8 @@
 
 
 <%!
-
+//Convierte el diccionario de notas que viene desde la clase Padre a un formato JSON
+//enviable por red
 public String HijosNotasToJson( HashMap<String, HashMap<String,HashMap<String,FichaHijo>>> notas_hijos)
 {
 	String cad = "[";
@@ -64,14 +65,14 @@ String tipo_usuario = (String)session.getAttribute("tipo_usuario");
 if (tipo_usuario == "padre")
 {
 	Padre padre = (Padre)session.getAttribute("usuario");
-	//abrir conexión base de datos
-
-	padre.conectar();
+	padre.conectar();//abrimos conexión con la base de datos
 	
+	
+	//obtenemos el diccionario de hijos/notas concernientes al padre en cuestion
 	HashMap<String, HashMap<String,HashMap<String,FichaHijo>>> hijos_notas = padre.getNotas();
     String hijos_notas_json = HijosNotasToJson(hijos_notas);
 
-	System.out.println(hijos_notas_json);
+  //enviamos el listado a cliente
 	out.print(hijos_notas_json);
 	out.flush();
 }

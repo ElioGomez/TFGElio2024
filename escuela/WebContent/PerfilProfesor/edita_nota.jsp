@@ -27,22 +27,27 @@
 
 String tipo_usuario = (String)session.getAttribute("tipo_usuario");
 
+
+//comprobamos que sea un usuario de tipo profesor
 if (tipo_usuario == "profesor")
 {
 	Profesor profe = (Profesor)session.getAttribute("usuario");
-	profe.conectar();
+	profe.conectar();//conectamos a la BD
 
 	String dni = request.getParameter("Dni_alumno");
 	String Asignatura = request.getParameter("Asignatura");
-	String email_padre = "diegomartinmontoro@gmail.com";//request.getParameter("Email_padre");
+	String email_padre = request.getParameter("Email_padre");
 	
-	
+	// recuperamos la información pertinente de la petición
 	int Curso = Integer.parseInt(request.getParameter("Curso"));
 	int Anyo = Integer.parseInt(request.getParameter("Anyo"));
 	float nota = Float.parseFloat(request.getParameter("Nota"));
 	
 	int exito = profe.editarNota(nota, dni, Asignatura, Curso, Anyo) ? 1 : 0;
 	
+	
+	// he tenido problemas con el mailer de java y gmail. No hay manera de configurar los permisos de la cuenta
+	// en teoría esto debería de funcionar una vez configurada la cuenta:
 	//mailer cartero = new mailer();
 	//cartero.enviaMensaje("La nota ha sido actualizada","Le informo que la calificación de su hijo para la asignatura "+Asignatura+" es de:"+nota , email_padre);
 			

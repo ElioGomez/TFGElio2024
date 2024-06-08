@@ -27,7 +27,7 @@ public class mailer
 		String MAIL_SUBJECT = "Querido usuario...";
 		String MAIL_BODY	= "";
 		String[] MAIL_TO	= {""};
-		String[] MAIL_CC	= {"segundodawMailSender@gmail.com"};
+		String[] MAIL_CC	= {"eliotfg2024@gmail.com"};
 		
 		public mailer(){};
 		

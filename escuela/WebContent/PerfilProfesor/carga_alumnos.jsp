@@ -24,6 +24,9 @@
 
 <%!
 
+
+// Convierte el diccionario de cursos/asignaturas/notas que viene desde la clase Profesor a un formato JSON
+// enviable por red
 public String CursosToJson(HashMap<String, HashMap<String, Curso>> anyos_cursos)
 {
 	String cad = "[";
@@ -32,8 +35,6 @@ public String CursosToJson(HashMap<String, HashMap<String, Curso>> anyos_cursos)
 	{
 		HashMap<String, Curso> cursos = anyo_set.getValue();
 		cad+="{\"Anyo\":\""+anyo_set.getKey()+"\", \"Cursos\":[";
-		
-		
 		
 		for (HashMap.Entry<String, Curso> curso_set : cursos.entrySet())
 		{
@@ -47,7 +48,7 @@ public String CursosToJson(HashMap<String, HashMap<String, Curso>> anyos_cursos)
 				
 				for (Pair<Float, Alumno> alum_nota : asig.get_alumnos_notas()) 
 				{
-					cad+="{\"Alumno\":\""+alum_nota.getValue().getNombre()+
+					cad+="{\"Alumno\":\""+alum_nota.getValue().get_nombre()+
 						"\",\"Alumno_dni\":\""+alum_nota.getValue().get_dni()+
 						"\",\"Padre_email\":\""+alum_nota.getValue().getEmail_padre()+
 						"\",\"Nota\":"+alum_nota.getKey()+"}," ;
@@ -69,19 +70,20 @@ public String CursosToJson(HashMap<String, HashMap<String, Curso>> anyos_cursos)
 
 <%
 
-String tipo_usuario = (String)session.getAttribute("tipo_usuario");
+String tipo_usuario = (String)session.getAttribute("tipo_usuario"); 
 
 if (tipo_usuario == "profesor")
 {
 	Profesor profe = (Profesor)session.getAttribute("usuario");
-	//abrir conexión base de datos
-
+	
+	//abrimos conexión con la base de datos
 	profe.conectar();
 	
+	//obtenemos el diccionario de cursos/asignaturas/notas concernientes al profesor en cuestion
     HashMap<String, HashMap<String, Curso>> cursos = profe.getCursos();
     String cursos_json = CursosToJson(cursos);
 
-	System.out.println(cursos_json);
+	//enviamos los cursos a cliente
 	out.print(cursos_json);
 	out.flush();
 }
