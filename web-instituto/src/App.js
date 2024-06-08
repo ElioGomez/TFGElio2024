@@ -12,6 +12,8 @@ import CyS from './components/CyS';
 import UsuarioP from './components/UsuarioP';
 import Noticia from './components/Noticia';
 import PerfilProfesor from './components/PerfilProfe';
+import PerfilPadre from './components/PerfilPadre';
+import PerfilAdmin from './components/PerfilAdmin';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 
@@ -20,8 +22,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 const App = () => {
   const images = [
-    'https://pbs.twimg.com/media/FxdBDeBWIAMLJWX?format=jpg&name=medium',
-    'https://pbs.twimg.com/media/Fwzts_nXsAQOkAt?format=jpg&name=4096x4096',
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLZ15HDrjI40dFalmm7FgaiV9XM4arNxxjAg&s',
+    'https://s3.abcstatics.com/media/provincia/2016/11/15/v/cortadura3-kS8H--620x349@abc.JPG',
     'https://www.castillosnet.org/datos/espana/cadiz/CA-CAS-031/TN_CA-CAS-031-1185001.JPG',
   ];
 
@@ -40,6 +42,8 @@ const App = () => {
     <Route path="/login" element={<Login/>}/>
     <Route path='/sugerencias' element={<CyS/>}/>
     <Route path='/perfilprofe' element={<PerfilProfesor/>}/>
+    <Route path='/perfilpadre' element={<PerfilPadre/>}/>
+    <Route path='/perfiladmin' element={<PerfilAdmin/>}/>
     </Routes>
     <Footer />
      

@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 import '../App.css'; 
+import { useUserState } from '../context/UserContext';
 
 const PerfilProfesor = () => {
+  const { userId, userType } = useUserState();
+  console.log(userId,userType)
   const [alumnos, setAlumnos] = useState([
     { Nombre: 'Juan Pérez', Asignatura: 'Matemáticas', Dni: '90123456I', Nota: 5 },
     { Nombre: 'María López', Asignatura: 'Historia', Dni: '90123457J', Nota: 7 },
@@ -10,7 +13,66 @@ const PerfilProfesor = () => {
     { Nombre: 'Ana Torres', Asignatura: 'Geografía', Dni: '90123459L', Nota: 8 },
     { Nombre: 'Luis Martínez', Asignatura: 'Literatura', Dni: '90123460M', Nota: 6 },
   ]);
-
+  useEffect(() => {
+    getUsers();
+   },[])
+    const getUsers = async ( ) => {
+  
+      try {
+        const response = await fetch('http://192.168.0.23:8080/escuela/carga_alumnos.jsp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            dni: userId,
+            tipo_usuario: userType
+          })
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data)
+          if (data["resultado"] === 1)
+          {
+                
+          }
+         
+        } else {
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+    const addUsers = async (body) => {
+  
+      try {
+        const response = await fetch('http://192.168.0.23:8080/escuela/crear_alumnos.jsp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            dni: userId,
+            tipo_usuario: userType,
+            ...body
+          })
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data)
+          if (data["resultado"] === 1)
+          {
+            getUsers();
+          }
+         
+        } else {
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
   const editarNota = async (alumnoEditado) => {
     try {
       // Simulación de una llamada a la API para editar el alumno
@@ -58,8 +120,10 @@ const PerfilProfesor = () => {
     const asignatura = prompt("Ingrese la asignatura del nuevo alumno:");
     const nota = parseInt(prompt("Ingrese la nota del nuevo alumno:"), 10);
     if (dni && nombre && asignatura && !isNaN(nota)) {
-      const nuevoAlumno = { Dni: dni, Nombre: nombre, Asignatura: asignatura, Nota: nota };
-      setAlumnos((prevAlumnos) => [...prevAlumnos, nuevoAlumno]);
+      const nuevoAlumno = { user_dni: dni, user_name: nombre, user_subject: asignatura, user_note: nota };
+      addUsers(nuevoAlumno)
+      
+      //setAlumnos((prevAlumnos) => [...prevAlumnos, nuevoAlumno]);
       alert(`Alumno con DNI ${dni} creado.`);
     } else {
       alert("Información incorrecta.");

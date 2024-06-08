@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import '../App.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUserDispatch, setUser, setUserType } from '../context/UserContext';
+import { useUserState } from '../context/UserContext';
+
 
 const Login = () => {
+  const { userId, userType } = useUserState();
   const [dni, setDni] = useState('');
   const [contraseña, setContraseña] = useState('');
-  const [tipo_usuario, setTipoUsuario] = useState('');
+  const [tipoUsuario, setTipoUsuario] = useState('0'); // Valor predeterminado de Usuario Padre
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();  
+  const dispatch = useUserDispatch();
 
-
+  useEffect(() => {
+    if(userId!=null)navigate("/")
+  },[])
 
   const handleDniChange = (e) => {
     setDni(e.target.value);
@@ -21,7 +30,6 @@ const Login = () => {
     setTipoUsuario(e.target.value);
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -34,20 +42,40 @@ const Login = () => {
         body: JSON.stringify({
           dni: dni,
           contraseña: contraseña,
-          tipo_usuario: tipo_usuario
+          tipo_usuario: tipoUsuario
         })
       });
 
       if (response.ok) {
-        // La solicitud de inicio de sesión fue exitosa
-        // Redirecciona al usuario a la página deseada o haz lo que necesites
-        console.log('Inicio de sesión exitoso');
+        const data = await response.json();
+        if (data["resultado"] === 1)
+        {
+              if (tipoUsuario == 0) {
+                setMessage('Inicio de sesión exitoso como Usuario Padre');
+                setUser(dispatch,data["dni"]);
+                setUserType(dispatch, tipoUsuario);
+                navigate('/perfilpadre');
+              } else if (tipoUsuario == 1) {
+                setUser(dispatch, data["dni"]);
+                setUserType(dispatch, tipoUsuario);
+                setMessage('Inicio de sesión exitoso como Usuario Profesor');
+                navigate('/perfilprofe');
+              } else if (tipoUsuario == 2) {
+                setUser(dispatch, data["dni"]);
+                setUserType(dispatch, tipoUsuario);
+                alert('Inicio de sesión exitoso como Administrador');
+                setMessage('Inicio de sesión exitoso como Administrador');
+                navigate('/perfiladmin');
+              } else {
+                setMessage('Error en el inicio de sesión');
+              }
+        }
+       
       } else {
-        // La solicitud de inicio de sesión falló
-        console.log('Error en el inicio de sesión');
+        setMessage('Error en el inicio de sesión');
       }
     } catch (error) {
-      // Ocurrió un error al realizar la solicitud
+      setMessage('Error al realizar la solicitud');
       console.error('Error:', error);
     }
   };
@@ -60,9 +88,9 @@ const Login = () => {
           Si aún no tienes la contraseña de usuario para padres, solo debes enviar un correo a la dirección 
           del centro con una imagen de tu DNI y el de tu hijo/a, y en un plazo de 3 días laborables te enviaremos la contraseña correspondiente.
           Si no te fuese posible enviar el correo, podrás solicitarlo a través del alumnado o, 
-          en su defecto, acudir tú al centro para entregar la documentación y recibir la contraseña.<br></br>
+          en su defecto, acudir tú al centro para entregar la documentación y recibir la contraseña.<br />
           Estaremos encantados de atenderte dentro del horario de atención al público, el cual es de 10:00
-          a 13:00 de lunes a viernes. <br></br>
+          a 13:00 de lunes a viernes. <br />
           Te esperamos
         </p>
       </div>
@@ -81,7 +109,7 @@ const Login = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="contraseña">PATATA92 Contraseña:</label>
+            <label htmlFor="contraseña">Contraseña:</label>
             <input
               type="password"
               id="contraseña"
@@ -90,22 +118,21 @@ const Login = () => {
               required
             />
           </div>
-
           <div className="form-group">
             <label htmlFor="tipo_usuario">Tipo usuario:</label>
-            <input
-              type="checkbox"
+            <select
               id="tipo_usuario"
-              value={tipo_usuario}
+              value={tipoUsuario}
               onChange={handleTipoUsuarioChange}
-              
-            />
+            >
+              <option value="0">Usuario Padre</option>
+              <option value="1">Usuario Profesor</option>
+              <option value="2">Administrador</option>
+            </select>
           </div>
-
-
           <button type="submit">Iniciar sesión</button>
         </form>
-        <Link to="/usuarioP">Ir a la página de UsuarioP</Link>
+        {message && <p>{message}</p>}
       </div>
     </div>
   );
